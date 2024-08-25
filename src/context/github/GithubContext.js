@@ -2,6 +2,7 @@
 import { createContext, useReducer } from 'react'
 import githubReducer from './GithubReducer'
 
+
 const GithubContext = createContext()
 
 const GITHUB_URL = process.env.REACT_APP_GITHUB_URL
@@ -9,12 +10,14 @@ const GITHUB_URL = process.env.REACT_APP_GITHUB_URL
 export const GithubProvider = ({ children }) => {
     const initialState = {
         users: [],
-        loading: true
+        loading: false,
     }
 
     const [state, dispatch] = useReducer(githubReducer, initialState)
 
+    // get initial users (testing purpose)
     const fetchUsers = async() => {
+        setLoading()
         const response = await fetch(`${GITHUB_URL}/users`)
         const data = await response.json()
         dispatch({
@@ -23,6 +26,8 @@ export const GithubProvider = ({ children }) => {
 
         })
     }
+
+    const setLoading = () => dispatch({type: 'SET_LOADING'})
 
     return <GithubContext.Provider value={{
         users: state.users,
